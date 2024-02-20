@@ -3,6 +3,14 @@ export const prerender = true;
 import MainLayout from '../../layouts/MainLayout.astro';
 import Discussions from '../../components/Discussions.astro';
 
+type PostType = {
+	urlId: string;
+	title: string;
+	text: string;
+	emoji: string;
+	createdAt: string;
+};
+
 export async function getStaticPaths() {
 	const options = {
 		method: 'POST',
@@ -23,7 +31,7 @@ export async function getStaticPaths() {
 	const body = await response.json();
 	const posts = body.data;
 
-	return posts.map((post) => {
+	return posts.map((post: PostType) => {
 		return {
 			params: { id: post.urlId },
 			props: { post }
@@ -34,8 +42,23 @@ const { id } = Astro.params;
 const { post } = Astro.props;
 ---
 
+<style>
+	.emoji:hover {
+		transform: rotate(90deg);
+	}
+</style>
+
 <MainLayout>
+	<span class='emoji'>
+		{post.emoji}
+	</span>
 	<article>
+		<h3>
+			{post.title}
+			<span class='emoji'>
+				{post.emoji}
+			</span>
+		</h3>
 		{post.text}
 		<Discussions />
 	</article>
