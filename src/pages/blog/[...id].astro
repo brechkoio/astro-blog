@@ -1,0 +1,42 @@
+---
+export const prerender = true;
+import MainLayout from '../../layouts/MainLayout.astro';
+import Discussions from '../../components/Discussions.astro';
+
+export async function getStaticPaths() {
+	const options = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			accept: 'application/json',
+			Authorization:
+				'Bearer ol_api_0lH9OPfWLqBj9tKRucufyBIJjkSzK051fYAbcO'
+		},
+		body: '{"collectionId":"01e0a648-4b04-44ce-bba5-5da8612a7a32"}'
+	};
+
+	const response = await fetch(
+		'https://app.getoutline.com/api/documents.list',
+		options
+	);
+
+	const body = await response.json();
+	const posts = body.data;
+
+	return posts.map((post) => {
+		return {
+			params: { id: post.urlId },
+			props: { post }
+		};
+	});
+}
+const { id } = Astro.params;
+const { post } = Astro.props;
+---
+
+<MainLayout>
+	<article>
+		{post.text}
+		<Discussions />
+	</article>
+</MainLayout>
