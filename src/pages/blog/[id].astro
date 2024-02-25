@@ -1,5 +1,6 @@
 ---
 // export const prerender = true;
+import GoBackLink from '../../components/GoBackLink.astro';
 import { Markdown } from '@astropub/md';
 import { fetchDocument } from '../../api/getoutline';
 import MainLayout from '../../layouts/MainLayout.astro';
@@ -12,5 +13,6 @@ console.log(document);
 ---
 
 <MainLayout title={title}>
+	<GoBackLink link='/blog' />
 	<Markdown of={text} />
 </MainLayout>

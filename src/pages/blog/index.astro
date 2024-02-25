@@ -1,5 +1,7 @@
 ---
 import { fetchAllDocuments } from '../../api/getoutline';
+import GoBackLink from '../../components/GoBackLink.astro';
+import Pagination from '../../components/Pagination.astro';
 import MainLayout from '../../layouts/MainLayout.astro';
 import Categories from '../../components/Categories.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
@@ -18,7 +20,10 @@ let documentsBody = await fetchAllDocuments({
 ---
 
 <MainLayout title='Blog page'>
-	<Categories collections={collections} />
+	<GoBackLink link='/' />
+	<section>
+		<Categories collections={collections} />
+	</section>
 	<section class='posts__block'>
 		<ul>
 			{
@@ -35,6 +40,7 @@ let documentsBody = await fetchAllDocuments({
 			}
 		</ul>
 	</section>
+	<Pagination />
 </MainLayout>
 
 <!-- <script>

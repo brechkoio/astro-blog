@@ -1,0 +1,29 @@
+<div class='pagination'>
+	<div class='pagination__button'>
+		<img src='/arrow_back.svg' alt='' />
+		<a href=''>Попередня сторінка</a>
+	</div>
+
+	<div class='pagination__button'>
+		<a href=''>Наступна сторінка</a>
+		<img src='/arrow_forward.svg' alt='' />
+	</div>
+</div>
+<style>
+	.pagination {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 50px;
+	}
+	.pagination__button {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		border: 1px solid black;
+		padding: 10px;
+		cursor: pointer;
+	}
+	.pagination__button a {
+		text-decoration: none;
+	}
+</style>
