@@ -1,144 +1,156 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
+import { fetchAllDocuments } from '../../api/getoutline';
+import MainLayout from '../../layouts/MainLayout.astro';
 import Categories from '../../components/Categories.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import FormattedDate from '../../components/FormattedDate.astro';
-type DocumentType = {
-	urlId: string;
-	title: string;
-	emoji: string;
-	createdAt: string;
-};
 
-const response = await fetch('https://app.getoutline.com/api/documents.list', {
-	method: 'POST',
-	headers: {
-		Accept: 'application/json',
-		'Content-Type': 'application/json',
-		Authorization: 'Bearer ol_api_0lH9OPfWLqBj9tKRucufyBIJjkSzK051fYAbcO'
-	},
-	body: '{"collectionId":"01e0a648-4b04-44ce-bba5-5da8612a7a32"}'
-});
+const category = Astro.url.searchParams.get('category');
 
-const body = await response.json();
-const document = body.data;
+const collectionsBody = await fetch(
+	`${Astro.url.origin}/api/getAllCollections.json`
+);
+
+const collections = await collectionsBody.json();
+
+let documentsBody = await fetchAllDocuments({ collectionId: category });
 ---
 
-<!doctype html>
-<html lang='en'>
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
+<MainLayout title='Blog page'>
+	<Categories collections={collections} />
+	<section class='posts__block'>
+		<ul>
+			{
+				documentsBody.map(({ id, title, emoji, createdAt }) => (
+					<li>
+						<a href={`/blog/${id}`}>
+							<h4 class='title'>{`<${title} - ${emoji}/>`}</h4>
+							<p class='date'>
+								<FormattedDate date={createdAt} />
+							</p>
+						</a>
+					</li>
+				))
 			}
-			ul {
-				display: flex;
-				justify-content: space-between;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-				transition: 0.5s;
-			}
-			ul li {
-				width: 40%;
-				border: 1px solid black;
-				background-color: #fff;
-				border-radius: 10px;
-				padding: 30px;
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li:hover {
-				transform: translateY(-5px);
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<Categories />
-			<section>
-				<ul>
-					{
-						document.map(
-							({
-								urlId,
-								title,
-								emoji,
-								createdAt
-							}: DocumentType) => (
-								<li>
-									<a href={`/blog/${urlId}/`}>
-										<h4 class='title'>
-											{`${title} - ${emoji}`}
-										</h4>
-										<p class='date'>
-											<FormattedDate date={createdAt} />
-										</p>
-									</a>
-								</li>
-							)
-						)
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+		</ul>
+	</section>
+</MainLayout>
+
+<!-- <script>
+	const postsBlock = document.querySelector('.posts__block > ul');
+	const elements = document.querySelectorAll('a[aria-label-path]');
+
+	function FormattedDate(date) {
+		return new Date(date).toLocaleDateString('uk-UA', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric'
+		});
+	}
+
+	elements.forEach((elem) =>
+		elem.addEventListener('click', async (e) => {
+			const currentLink = e.target.getAttribute('aria-label-path');
+
+			const res = await fetch(`/api/getAllDocuments.json`, {
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify({ id: currentLink })
+			});
+
+			const documents = await res.json();
+
+			const posts = documents.map(({ id, title, emoji, createdAt }) => {
+				console.log(title);
+				return `
+						<li>
+						<a href="/blog/${id}">
+							<h4 class='title'>${title} - ${emoji}</h4>
+							<p class='date'>${FormattedDate(createdAt)}</p>
+						</a>
+						</li>
+				`;
+			});
+			// postsBlock?.childNodes.removeChild(postsBlock);
+			postsBlock?.insertAdjacentHTML('afterbegin', posts);
+		})
+	);
+</script> -->
+
+<style>
+	ul {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 2rem;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	ul li {
+		width: 40%;
+		border: 1px solid black;
+		background-color: #fff;
+		transition: 0.3s;
+		padding: 30px;
+	}
+	ul li * {
+		text-decoration: none;
+		transition: 0.2s ease;
+	}
+	ul li:first-child {
+		width: 100%;
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+	ul li:first-child img {
+		width: 100%;
+	}
+	ul li:first-child .title {
+		font-size: 2.369rem;
+	}
+	ul li img {
+		margin-bottom: 0.5rem;
+		border-radius: 12px;
+	}
+	ul li a {
+		display: block;
+	}
+	.title {
+		margin: 0;
+		color: rgb(var(--black));
+		line-height: 1;
+	}
+	.date {
+		margin: 0;
+		color: rgb(var(--gray));
+	}
+	ul li:hover {
+		-webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+		-moz-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+		box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+	}
+	ul li a:hover h4,
+	ul li a:hover .date {
+		color: rgb(var(--accent));
+	}
+	ul a:hover img {
+		box-shadow: var(--box-shadow);
+	}
+	@media (max-width: 720px) {
+		ul {
+			gap: 0.5em;
+		}
+		ul li {
+			width: 100%;
+			text-align: center;
+		}
+		ul li:first-child {
+			margin-bottom: 0;
+		}
+		ul li:first-child .title {
+			font-size: 1.563em;
+		}
+	}
+</style>

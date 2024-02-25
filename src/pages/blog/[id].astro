@@ -1,0 +1,16 @@
+---
+// export const prerender = true;
+import { Markdown } from '@astropub/md';
+import { fetchDocument } from '../../api/getoutline';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const { id } = Astro.params;
+
+const document = await fetchDocument({ id: id });
+const { title, text } = document;
+console.log(document);
+---
+
+<MainLayout title={title}>
+	<Markdown of={text} />
+</MainLayout>

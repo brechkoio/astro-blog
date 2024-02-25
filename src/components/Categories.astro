@@ -1,52 +1,52 @@
 ---
 type CategotyType = {
 	name: string;
+	id: string;
 };
-const response = await fetch(
-	'https://app.getoutline.com/api/collections.list',
-	{
-		method: 'POST',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-			Authorization:
-				'Bearer ol_api_0lH9OPfWLqBj9tKRucufyBIJjkSzK051fYAbcO'
-		}
-	}
-);
-
-const body = await response.json();
-const document = body.data;
+const { collections } = Astro.props;
 ---
 
 <div class='categories'>
-	Categories:
+	Категорії:
 	<ul class='categories__list'>
 		{
-			document.map((categoty: CategotyType) => (
-				<li class='categories__item'>{categoty.name}</li>
+			collections.map(({ id, name }: CategotyType) => (
+				<li class='categories__item'>
+					<a href={'?category=' + id} aria-label-path={id}>
+						{name}
+					</a>
+				</li>
 			))
 		}
 	</ul>
+
+	<style>
+		.categories {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			margin-bottom: 100px;
+		}
+
+		.categories__list {
+			display: flex;
+			list-style: none;
+			gap: 20px;
+		}
+
+		.categories__item {
+			border: 1px solid black;
+			padding: 15px;
+			background-color: #fff;
+			transition: 0.3s;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		.categories__item:hover {
+			-webkit-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+			-moz-box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+			box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
+		}
+	</style>
 </div>
-
-<style>
-	.categories {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		margin-bottom: 30px;
-	}
-
-	.categories__list {
-		display: flex;
-		list-style: none;
-		gap: 10px;
-	}
-
-	.categories__item {
-		border: 1px solid black;
-		padding: 15px;
-		background-color: #fff;
-	}
-</style>

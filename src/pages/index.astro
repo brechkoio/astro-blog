@@ -1,25 +1,16 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>Що таке Jamstack ?</h1>
-			<p>
-				Jamstack — це архітектурний підхід, який відокремлює рівень веб-доступу від даних і бізнес-логіки, покращуючи гнучкість, масштабованість, продуктивність і зручність обслуговування.
-				Jamstack усуває потребу в бізнес-логіці, щоб диктувати веб-досвід.
-				Це дає змогу створювати архітектуру, яку можна компонувати для Інтернету, де спеціальна логіка та сторонні сервіси використовуються через API.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<MainLayout>
+	<h1>Що таке Jamstack ?</h1>
+	<p>
+		Jamstack — це архітектурний підхід, який відокремлює рівень веб-доступу
+		від даних і бізнес-логіки, покращуючи гнучкість, масштабованість,
+		продуктивність і зручність обслуговування. Jamstack усуває потребу в
+		бізнес-логіці, щоб диктувати веб-досвід. Це дає змогу створювати
+		архітектуру, яку можна компонувати для Інтернету, де спеціальна логіка
+		та сторонні сервіси використовуються через API.
+	</p>
+</MainLayout>
