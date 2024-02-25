@@ -12,7 +12,9 @@ const collectionsBody = await fetch(
 
 const collections = await collectionsBody.json();
 
-let documentsBody = await fetchAllDocuments({ collectionId: category });
+let documentsBody = await fetchAllDocuments({
+	collectionId: category || collections[0].id
+});
 ---
 
 <MainLayout title='Blog page'>
