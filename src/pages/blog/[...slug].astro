@@ -1,0 +1,24 @@
+---
+// export const prerender = true;
+import GoBackLink from '../../components/GoBackLink.astro';
+import { Markdown } from '@astropub/md';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const blogEntries = await getCollection('blog');
+
+	return blogEntries.map((entry) => ({
+		params: { slug: entry.slug },
+		props: { entry }
+	}));
+}
+
+const { entry } = Astro.props;
+console.log(entry);
+---
+
+<MainLayout>
+	<GoBackLink link='/blog' />
+	<Markdown of={entry.body} />
+</MainLayout>

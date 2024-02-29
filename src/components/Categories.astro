@@ -10,10 +10,10 @@ const { collections } = Astro.props;
 	Категорії:
 	<ul class='categories__list'>
 		{
-			collections.map(({ id, name }: CategotyType) => (
+			collections.map(({ data, id }: CategotyType) => (
 				<li class='categories__item'>
-					<a href={'?category=' + id} aria-label-path={id}>
-						{name}
+					<a href={id} aria-label-path={id}>
+						{data.collectionTitle}
 					</a>
 				</li>
 			))

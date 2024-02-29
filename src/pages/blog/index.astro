@@ -1,40 +1,27 @@
 ---
-import { fetchAllDocuments } from '../../api/getoutline';
 import GoBackLink from '../../components/GoBackLink.astro';
 import Pagination from '../../components/Pagination.astro';
 import MainLayout from '../../layouts/MainLayout.astro';
 import Categories from '../../components/Categories.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 
-const category = Astro.url.searchParams.get('category');
+import { getCollection } from 'astro:content';
 
-const collectionsBody = await fetch(
-	`${Astro.url.origin}/api/getAllCollections.json`
-);
-
-const collections = await collectionsBody.json();
-
-let documentsBody = await fetchAllDocuments({
-	collectionId: category || collections[0].id
-});
+const allBlogPosts = await getCollection('blog');
+// console.log(allBlogPosts);
 ---
 
 <MainLayout title='Blog page'>
 	<GoBackLink link='/' />
 	<section>
-		<Categories collections={collections} />
+		<Categories collections={allBlogPosts} />
 	</section>
 	<section class='posts__block'>
 		<ul>
 			{
-				documentsBody.map(({ id, title, emoji, createdAt }) => (
+				allBlogPosts.map((item) => (
 					<li>
-						<a href={`/blog/${id}`}>
-							<h4 class='title'>{`<${title} - ${emoji}/>`}</h4>
-							<p class='date'>
-								<FormattedDate date={createdAt} />
-							</p>
-						</a>
+						<a href={item.slug}>{item.data.title}</a>
 					</li>
 				))
 			}
